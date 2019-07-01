@@ -101,7 +101,7 @@ class Fep_Emails {
 					continue;
 				}
 				wp_mail( $to, $content['subject'], $content['message'], $content['headers'], $content['attachments'] );
-                do_action('fep_send_sms_new_message', $participant);
+                do_action('fep_send_sms_new_message', $participant, preg_replace('/#MSG_ID#/i', $mgs->mgs_id, $link));
             } //End foreach
 			fep_remove_email_filters();
 			fep_update_meta( $mgs->mgs_id, '_fep_email_sent', time() );
