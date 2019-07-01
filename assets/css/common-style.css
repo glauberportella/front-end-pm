@@ -11,26 +11,36 @@
 .fep-button-active {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-	/* background: #f0fcff; */
+	background: #fff !important;
 	border-radius: 5px;
-	border: 1px solid #8FBFC9;
+	border: 1px solid #f15524;
 	/* color: #000000 !important; */
 	cursor: pointer;
 	display: inline-block;
-	font-size: 13px;
+	/*font-size: 13px;*/
 	font-weight: bold;
 	margin-right: 10px;
 	margin-top: 10px;
-	padding: 10px 20px;
+	padding: 5px 20px;
 	text-align: center;
 	text-decoration: none !important;
 }
 
+.fep-button-active {
+    background: #f15524 !important;
+    color: #fff !important;
+}
+
 #fep-menu .fep-button:hover,
 .fep-button-active {
-	/* background: #d3eef5; */
-	/* color: #333; */
-	font-size: 14px;
+    background: #f15524 !important;
+    color: #fff !important;
+	/*font-size: 14px;*/
+}
+
+.fep-bulk-action-apply-button {
+    font-weight: normal;
+    font-size: 14px;
 }
 
 #fep-notification-bar {
@@ -39,11 +49,11 @@
 	-moz-box-sizing: border-box;
 	-webkit-border-radius: 3px;
 	-webkit-box-sizing: border-box;
-	background-color: #ffebe8;
-	border-color: #c00;
-	border-radius: 3px;
+	background-color: #fff;
+	border-color: #f15524;
+	border-radius: 0;
 	border-style: solid;
-	border-width: 1px;
+	border-width: 2px;
 	box-sizing: border-box;
 	color: black;
 	font-size: 12px;
@@ -67,7 +77,7 @@
 	padding: 12px;
 	position: absolute;
 	right: 10px;
-	top: 0;
+	top: -7px;
 }
 
 .fep-font-red {

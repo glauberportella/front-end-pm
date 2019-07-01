@@ -3,6 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+$photoManager = new \IFriend\Profile\PhotoManager(GOOGLE_CLOUD_PROJECT_ID, GOOGLE_CLOUD_BUCKET);
+
 $messages_heads = Fep_Messages::init()->user_messages();
 
 if ( $messages_heads->have_messages() ) {
@@ -28,12 +30,19 @@ if ( $messages_heads->have_messages() ) {
 			<div class="fep-avatar-p <?php echo ( count( $participants ) > 2 ) ? 'fep-avatar-p-120' : 'fep-avatar-p-90' ?>">
 			<?php
 			foreach ( $participants as $p ) {
+			    $user = get_userdata((int) $p);
 				if ( $count > 2 ) {
 					echo '<div class="fep-avatar-more-60" title="' . __( 'More users', 'front-end-pm' ) . '"></div>';
 					break;
 				}
 				?>
-				<div class="fep-avatar-<?php echo $count; ?>"><?php echo get_avatar( $p, 60, '', fep_user_name( $p ), array( 'extra_attr' => 'title="' . fep_user_name( $p ) . '"' ) ); ?></div>
+				<div class="fep-avatar-<?php echo $count; ?>">
+				    <?php if ($user->user_avatar_url): ?>
+				        <img src="<?php echo $photoManager->getAvatarUrl($user) ?>" class="avatar avatar-60 photo" width="60" height="60" title="<?php echo fep_user_name( $p ) ?>">
+				    <?php else: ?>
+				        <?php echo get_avatar( $p, 60, '', fep_user_name( $p ), array( 'extra_attr' => 'title="' . fep_user_name( $p ) . '"' ) ); ?>
+				    <?php endif; ?>
+                </div>
 				<?php
 				$count++;
 			}

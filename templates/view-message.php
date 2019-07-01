@@ -11,7 +11,7 @@ if ( fep_get_option( 'block_other_users', 1 ) ) {
 	<div id="fep-content-single-sidebar">
 		<div class="fep-content-single-sidebar-loader"></div>
 		<div class="fep-filter-heads-div">
-			<select class="fep-filter-heads">
+			<select class="fep-filter-heads form-control">
 				<?php foreach ( Fep_Messages::init()->get_table_filters() as $filter => $filter_display ) : ?>
 					<option value="<?php echo esc_attr( $filter ); ?>"<?php selected( isset( $_GET['fep-filter'] ) ? $_GET['fep-filter'] : '', $filter ); ?>><?php echo esc_html( $filter_display ); ?></option>
 				<?php endforeach; ?>

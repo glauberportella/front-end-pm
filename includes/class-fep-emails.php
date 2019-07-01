@@ -29,6 +29,8 @@ class Fep_Emails {
 	}
 
 	function send_email( $mgs, $prev_status ) {
+        $photoManager = new \IFriend\Profile\PhotoManager(GOOGLE_CLOUD_PROJECT_ID, GOOGLE_CLOUD_BUCKET);
+
 		if ( 'message' != $mgs->mgs_type ) {
 			return;
 		}
@@ -40,15 +42,33 @@ class Fep_Emails {
 		$participants = apply_filters( 'fep_filter_send_email_participants', $participants, $mgs->mgs_id );
 		if ( $participants && is_array( $participants ) ) {
 			$participants = array_unique( array_filter( $participants ) );
-			$subject  = get_bloginfo( 'name' ) . ': ' . __( 'New Message', 'front-end-pm' );
-			$message  = __( 'You have received a new message in', 'front-end-pm' ) . "\r\n";
-			$message .= get_bloginfo( 'name' ) . "\r\n";
-			$message .= sprintf( __( 'From: %s', 'front-end-pm' ), fep_user_name( $mgs->mgs_author ) ) . "\r\n";
-			$message .= sprintf( __( 'Subject: %s', 'front-end-pm' ), $mgs->mgs_title ) . "\r\n";
-			$message .= __( 'Please Click the following link to view full Message.', 'front-end-pm' ) . "\r\n";
-			$message .= fep_query_url( 'messagebox' ) . "\r\n";
-			if ( 'html' == fep_get_option( 'email_content_type', 'plain_text' ) ) {
-				$message      = nl2br( $message );
+            $subject  = get_bloginfo( 'name' ) . ': ' . __( 'New Message', 'front-end-pm' );
+            
+			$raw_message  = '<p style="text-align: center; font-family: sans-serif"><b>' . __( 'You have received a new message in', 'front-end-pm' );
+            $raw_message .= ' ' . get_bloginfo( 'name' ) . "</b></p>";
+    
+            $author_name = fep_user_name( $mgs->mgs_author );
+            $author_data = get_userdata($mgs->mgs_author);
+            $author_image_src = null;
+            if ($author_data->user_avatar_url) {
+                $author_image_src = $photoManager->getAvatarUrl($author_data);
+            }
+            if ($author_image_src) {
+                $raw_message .= '<h2 style="text-align: center; font-family: sans-serif; margin-bottom: 40px;"><img src="'.$author_image_src.'" alt="" width="64" height="64" style="position: relative; top: 20px; border-radius: 32px;"> ' . $author_name . ' ' . __('is waiting your answer', 'front-end-pm') . '</h2>';
+            } else {
+                $raw_message .= '<h2 style="text-align: center; font-family: sans-serif; margin-bottom: 40px;"><b>' . $author_name . '</b> ' . __('is waiting your answer', 'front-end-pm') . '</h2>';
+            }
+            
+            $link = home_url() . '?do=answer-message&msgid=#MSG_ID#';
+            //fep_query_url( 'messagebox' );
+            
+            $raw_message .= '<p style="font-size: 16px; text-align: center; font-family: sans-serif">' . sprintf(__('Responding quickly to the <b>%s</b> message will help increase user confidence in your profile and service.', 'front-end-pm'), $author_name) . '</p>';            
+			$raw_message .= '<p style="text-align: center; font-family: sans-serif">' . __( 'Please Click the following link to view full Message.', 'front-end-pm' ) . "</p>";
+			$raw_message .= '<p style="text-align: center; font-family: sans-serif"><br><br><a href="' . $link . '" style="padding: 15px; font-weight: bold; color: white; background-color: #090; font-size: 14px;text-decoration: none;border: 1px solid #060;">'.__('ANSWER MESSAGE', 'front-end-pm').'</a></p>';
+            
+            if ( 'html' == fep_get_option( 'email_content_type', 'plain_text' ) ) {
+                $raw_message      = nl2br( $raw_message );
+                $raw_message      = apply_filters('fep_html_email_decorator', $raw_message);
 				$content_type = 'text/html';
 			} else {
 				$content_type = 'text/plain';
@@ -70,14 +90,19 @@ class Fep_Emails {
 				$to = fep_get_userdata( $participant, 'user_email', 'id' );
 				if ( ! $to ) {
 					continue;
-				}
+                }
+                
+                // message link
+                $message = preg_replace('/#MSG_ID#/i', $mgs->mgs_id, $raw_message);
+
 				$content = apply_filters( 'fep_filter_before_email_send', compact( 'subject', 'message', 'headers', 'attachments' ), $mgs, $to );
 
 				if ( empty( $content['subject'] ) || empty( $content['message'] ) ) {
 					continue;
 				}
 				wp_mail( $to, $content['subject'], $content['message'], $content['headers'], $content['attachments'] );
-			} //End foreach
+                do_action('fep_send_sms_new_message', $participant);
+            } //End foreach
 			fep_remove_email_filters();
 			fep_update_meta( $mgs->mgs_id, '_fep_email_sent', time() );
 		}

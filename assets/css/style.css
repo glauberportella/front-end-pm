@@ -7,7 +7,7 @@
 
 /*Header styling*/
 #fep-header {
-	border: 1px solid #e7e7e7;
+	/*border: 1px solid #e7e7e7;*/
 	/* color: #000000; */
 	width: 100%;
 }
@@ -151,6 +151,14 @@
 	margin-top: 10px;
 }
 
+.fep-table .fep-column {
+    padding: 10px;
+}
+
+.fep-column-title a {
+    font-weight: bold;
+}
+
 .fep-table .fep-column-avatar,
 .fep-table .fep-column-fep-cb {
 	padding-right: 10px;
@@ -186,14 +194,14 @@
 
 .fep-unread-class {
 	background-color: red; /* you could use a background image if you'd like as well */
-	border-radius: 30px;
+	border-radius: 4px;
 	box-shadow: 1px 1px 1px gray;
 	color: white;
 	font-size: 9px;
 	font-weight: bold;
 	height: 16px;
 	line-height: 16px;
-	padding: 0 1px;
+	padding: 0 5px;
 	position: absolute; /* This breaks the div from the normal HTML document. */
 	top: -6px;
 }
