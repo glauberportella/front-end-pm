@@ -105,7 +105,7 @@ class Fep_Shortcodes {
 		extract( $atts );
 		$to_id = fep_get_userdata( $to );
 		if ( ! is_user_logged_in() ) {
-			return apply_filters( 'fep_filter_shortcode_new_message_form', '<div class="fep-error">' . sprintf( __( 'You must <a href="%s">login</a> to contact', 'front-end-pm' ), wp_login_url( get_permalink() ) ) . '</div>', $atts );
+			return apply_filters( 'fep_filter_shortcode_new_message_form', '<div class="fep-error">' . sprintf( __( 'You must <a href="%s">login</a> to contact', 'front-end-pm' ), wp_login_url( get_permalink() ) . ( isset($_REQUEST['fepaction']) ? '?fepaction=newmessage' . (isset($_REQUEST['to']) && !empty($_REQUEST['to']) ? '&to=' . $_REQUEST['to'] : '') : '' ) ) . '</div>', $atts );
 		} elseif ( ! fep_current_user_can( 'send_new_message_to', $to_id ) ) {
 			return apply_filters( 'fep_filter_shortcode_new_message_form', '<div class="fep-error">' . sprintf( __( 'You cannot send message to %s', 'front-end-pm' ), fep_user_name( $to_id ) ) . '</div>', $atts );
 		}
