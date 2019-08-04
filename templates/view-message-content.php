@@ -75,7 +75,7 @@ if ( $messages->have_messages() ) {
 					} else {
 						do_action( 'fep_display_after_reply_message' );
 					}
-					do_action( 'fep_display_after_message', $i ); ?>
+					do_action( 'fep_display_after_message', $i, fep_get_the_content() ); ?>
 				</div>
 			</div>
 			<?php
